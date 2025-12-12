@@ -22,6 +22,15 @@ export default function HomeScreen({ navigation }) {
 
     if (loading) return <ActivityIndicator size="large" style={{ flex: 1 }} />;
 
+    const handleTeamPress = (team) => {
+        navigation.navigate('Teams', { screen: 'TeamDetailsScreen', params: { teamId: team.id } });
+    };
+
+    const handleEditTeam = (team) => {
+        navigation.navigate('Teams', { screen: 'TeamEditScreen', params: { teamId: team.id } });
+    };
+
+
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>Welcome to SportsApp!</Text>
@@ -29,16 +38,19 @@ export default function HomeScreen({ navigation }) {
             <View style={styles.section}>
                 <View style={styles.header}>
                     <Text style={styles.sectionTitle}>Latest Teams</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('Teams')}>
-                        <Text style={styles.link}>See All</Text>
-                    </TouchableOpacity>
                 </View>
                 <FlatList
                     data={teams}
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    keyExtractor={(item) => item.name}
-                    renderItem={({ item }) => <TeamCard team={item} onPress={() => navigation.navigate('TeamDetails', { teamId: item.id })} />}
+                    keyExtractor={(item, index) => item.id ? item.id : index.toString()}
+                    renderItem={({ item }) => (
+                        <TeamCard
+                            team={item}
+                            onPress={() => handleTeamPress(item)}
+                            onEdit={() => handleEditTeam(item)}
+                        />
+                    )}
                 />
             </View>
 
@@ -67,5 +79,5 @@ const styles = StyleSheet.create({
     section: { marginBottom: 20 },
     header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
     sectionTitle: { fontSize: 18, fontWeight: 'bold' },
-    link: { fontSize: 14, color: '#1e90ff' },
+    link: { fontSize: 14, color: '#1e90ff', marginLeft: 12 },
 });
